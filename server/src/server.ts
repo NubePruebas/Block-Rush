@@ -82,11 +82,18 @@ app.post('/api/stats/event', (req, res) => {
   res.json({ ok: true, partidas: s.partidas });
 });
 
+const portadaDir = path.join(__dirname, '..', '..', 'portada-juego');
+if (fs.existsSync(portadaDir)) {
+  app.use('/portada-juego', express.static(portadaDir, { maxAge: '7d' }));
+}
+
 const dist = path.join(__dirname, '..', '..', 'client', 'dist');
 if (fs.existsSync(dist)) {
   app.use(express.static(dist, { maxAge: '1h', index: false }));
   app.get('*', (req, res, next) => {
-    if (req.path === '/health' || req.path.startsWith('/api')) return next();
+    if (req.path === '/health' || req.path.startsWith('/api') || req.path.startsWith('/portada-juego')) {
+      return next();
+    }
     res.sendFile(path.join(dist, 'index.html'));
   });
 } else {
