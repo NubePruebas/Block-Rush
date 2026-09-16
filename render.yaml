@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: block-rush
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
